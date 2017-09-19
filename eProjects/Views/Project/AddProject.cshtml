@@ -1,0 +1,302 @@
+﻿@model eProjects.Models.ProjectViewModels.AddProjectViewModel
+
+@{
+    ViewData["Title"] = "AddProject";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
+<link href="~/lib/bootstrap-sweetalert/dist/sweetalert.css" rel="stylesheet" />
+
+<br />
+<div class="col-md-offset-2">
+    <label class="text-danger">@ViewBag.Message</label>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form asp-action="AddProject">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Project Details</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="ProjectName" class="control-label"></label>
+                            <input asp-for="ProjectName" class="form-control" />
+                            <span asp-validation-for="ProjectName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CM" class="control-label"></label>
+                            <input asp-for="CM" class="form-control" />
+                            <span asp-validation-for="CM" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="StartDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PredictedEndDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="PredictedEndDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="PredictedEndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Resources</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="StartupLeader" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="STRTShow()">+</button>
+                            <select asp-for="StartupLeader" class="form-control" asp-items="@ViewBag.StartupLeaders">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="StartupLeader" class="text-danger"></span>
+                        </div>
+                        <div id="STRT" class="form-group">
+                            <label asp-for="AdditionalStartupLeader" class="control-label"></label>
+                            <input asp-for="AdditionalStartupLeader" class="form-control" />
+                            <span asp-validation-for="AdditionalStartupLeader" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PcisResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="PCISShow()">+</button>
+                            <select asp-for="PcisResource" class="form-control" asp-items="@ViewBag.PcisResource">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="PcisResource" class="text-danger"></span>
+                        </div>
+                        <div id="PCIS" class="form-group">
+                            <label asp-for="AdditionalPcisResource" class="control-label"></label>
+                            <input asp-for="AdditionalPcisResource" class="form-control" />
+                            <span asp-validation-for="AdditionalPcisResource" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PTResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="PTShow()">+</button>
+                            <select asp-for="PTResource" class="form-control" asp-items="@ViewBag.PTResource">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="PTResource" class="text-danger"></span>
+                        </div>
+                        <div id="PT" class="form-group">
+                            <label asp-for="AdditionalPTResource" class="control-label"></label>
+                            <input asp-for="AdditionalPTResource" class="form-control" />
+                            <span asp-validation-for="AdditionalPTResource" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EIResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="EIShow()">+</button>
+                            <select asp-for="EIResource" class="form-control" asp-items="@ViewBag.EIResource">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="EIResource" class="text-danger"></span>
+                        </div>
+                        <div id="EI" class="form-group">
+                            <label asp-for="AdditionalEIResource" class="control-label"></label>
+                            <input asp-for="AdditionalEIResource" class="form-control" />
+                            <span asp-validation-for="AdditionalEIResource" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Organisational Details</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="LeadingDepartment" class="control-label"></label>
+                            <select asp-for="LeadingDepartment" class="form-control" asp-items="@ViewBag.LeadingDepartment">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="LeadingDepartment" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImpactedDepartment" class="control-label"></label>
+                            <select asp-for="ImpactedDepartment" class="form-control" asp-items="@ViewBag.impactedDepartment">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="ImpactedDepartment" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Priority" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="displayInfo()">?</button>
+                            <select asp-for="Priority" class="form-control" asp-items="@ViewBag.Priority">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="Priority" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FundingType" class="control-label"></label>
+                            <select asp-for="FundingType" class="form-control" asp-items="@ViewBag.FundingType">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="FundingType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ProjectType" class="control-label"></label>
+                            <select asp-for="ProjectType" class="form-control" asp-items="@ViewBag.ProjectTypes">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="ProjectType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Category" class="control-label"></label>
+                            <select asp-for="Category" class="form-control" asp-items="@ViewBag.Categories">
+                                <option disabled selected>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Predicted Periods</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="FesabilityEndDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="FesabilityEndDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="FesabilityEndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ConceptualEndDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="ConceptualEndDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="ConceptualEndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DefinitionEndDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="DefinitionEndDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="DefinitionEndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DesignConstructEndDate" class="control-label"></label>
+                            <div class="input-group date" data-provider="datepicker">
+                                <input asp-for="DesignConstructEndDate" type="text" class="form-control" />
+                                <div class="input-group-addon glyphicon glyphicon-th"></div>
+                            </div>
+                            <span asp-validation-for="DesignConstructEndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Other Details</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input asp-for="PlantAE" /> @Html.DisplayNameFor(model => model.PlantAE)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input asp-for="TeamCharter" /> @Html.DisplayNameFor(model => model.TeamCharter)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ETC" class="control-label"></label>
+                            <input asp-for="ETC" class="form-control" />
+                            <span asp-validation-for="ETC" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            <select asp-for="Status" class="form-control" asp-items="@ViewBag.Status"></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Comments" class="control-label"></label>
+                            <textarea cols="50" rows="5" asp-for="Comments" class="form-control" ></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-lg btn-block btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script src="~/lib/bootstrap-sweetalert/dist/sweetalert.js"></script>
+
+<script>
+    $('#StartDate').datepicker();
+    $('#PredictedEndDate').datepicker();
+    $('#FesabilityEndDate').datepicker();
+    $('#ConceptualEndDate').datepicker();
+    $('#DefinitionEndDate').datepicker();
+    $('#DesignConstructEndDate').datepicker();
+
+
+    function displayInfo() {
+        swal({
+            title: "Priority Classification",
+            type: "info",
+            text: "1 - Safety / Quality / Initiatives \n 2 - Savings \n 3 - Non - Savings with high Priority \n 4 - Future Projects"
+        });
+    }
+
+    $(document).ready(function () {
+        $('#PCIS').hide();
+        $('#PT').hide();
+        $('#EI').hide();
+        $('#STRT').hide();
+    })
+
+    function PCISShow(){
+        $('#PCIS').show();
+    };
+
+    function STRTShow() {
+        $('#STRT').show();
+    };
+
+    function PTShow() {
+        $('#PT').show();
+    };
+
+    function EIShow() {
+        $('#EI').show();
+    };
+
+</script>

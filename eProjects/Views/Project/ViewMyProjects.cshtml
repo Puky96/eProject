@@ -1,0 +1,32 @@
+﻿@model IEnumerable<eProjects.DBModels.Masterplan>
+@{ 
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<br />
+@Html.ActionLink("Add Project", "AddProject", "Project")
+<br />
+
+@(Html.Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.ProjectName).Titled("Project Name").Filterable(true);
+        columns.Add(model => model.StartDate).RenderedAs(model => model.StartDate.ToString("dd.MM.yyyy")).Titled("Start Date").Filterable(true);
+        columns.Add(model => model.PredictedEndDate).RenderedAs(model => model.PredictedEndDate.ToString("dd.MM.yyyy")).Titled("End Date - Predicted").Filterable(true);
+        columns.Add(model => model.Status).Titled("Status").Filterable(true);
+        columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Edit Project", "EditProject", "Project", new { projectId = model.Id })).Titled("Options");
+    })
+     .Sortable()
+     .Pageable(pager =>
+     {
+         pager.RowsPerPage = 10;
+         pager.CurrentPage = 1;
+
+     })
+     .Empty("No projects to show!")
+)
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/MvcGrid/mvc-grid.js"></script>
+<script>
+    $('.mvc-grid').mvcgrid();
+</script>

@@ -1,0 +1,58 @@
+﻿@model eProjects.Models.AccountViewModels.LDAPViewModel
+
+@{
+    ViewData["Title"] = "LDAP";
+    Layout = "~/Views/Shared/_Layout_Auth.cshtml";
+}
+<style>
+    footer {
+        text-align: center;
+    }
+</style>
+
+<form asp-action="LDAP">
+    <div class="panel panel-primary">
+        <div class="panel panel-heading  text-center">
+            <h2>eProjects</h2>
+        </div>
+        <div class="panel panel-body">
+            <div class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="container col-md-10 col-md-offset-2">
+                    <div class="form-group">
+                        <label asp-for="UserName" class="col-md-2 control-label"></label>
+                        <div class="col-md-8">
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="container col-md-10 col-md-offset-2">
+                    <div class="form-group">
+                        <label asp-for="Password" class="col-md-2 control-label"></label>
+                        <div class="col-md-8">
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panell panel-footer text-center">
+            <p>
+                <a asp-action="Login">Administrator?</a>
+            </p>
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-lg btn-primary btn-block">Log in</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

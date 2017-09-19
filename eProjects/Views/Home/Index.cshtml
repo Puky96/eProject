@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@{ 
+    if (ViewBag.IsAdmin)
+    {
+        Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+<br />
+
+<style>
+    img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<img src="~/banner.png" height="500" width="670" />
+
+

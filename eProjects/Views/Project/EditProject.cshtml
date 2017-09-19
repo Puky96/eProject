@@ -1,0 +1,823 @@
+﻿@model eProjects.Models.ProjectViewModels.EditProjectViewModel
+@{
+    if (ViewBag.IsAdmin)
+    {
+        Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+}
+<br />
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <form asp-action="EditProject">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(model => model.Id)
+            <div class="form-group">
+                <label asp-for="ProjectName" class="control-label"></label>
+                @Html.DisplayFor( model => model.ProjectName)
+            </div>
+            <div class="form-group">
+                <label asp-for="ProjectLeader" class="control-label"></label>
+                @Html.DisplayFor(model => model.ProjectLeader)
+            </div>
+            <div class="form-group">
+                <label asp-for="StartupLeader" class="control-label"></label>
+                @Html.DisplayFor(model => model.StartupLeader)
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                @Html.DisplayFor(model => model.StartDate)
+            </div>
+            <div class="form-group">
+                <label asp-for="PredictedEndDate" class="control-label"></label>
+                @Html.DisplayFor(model => model.PredictedEndDate)
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Resources</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="PcisResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="PCISShow()">+</button>
+                            <select asp-for="PcisResource" class="form-control" asp-items="@ViewBag.PcisResource">
+                                <option disabled>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="PcisResource" class="text-danger"></span>
+                        </div>
+                        <div id="PCIS" class="form-group">
+                            <label asp-for="AdditionalPcisResource" class="control-label"></label>
+                            <input asp-for="AdditionalPcisResource" class="form-control" />
+                            <span asp-validation-for="AdditionalPcisResource" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PTResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="PTShow()">+</button>
+                            <select asp-for="PTResource" class="form-control" asp-items="@ViewBag.PTResource">
+                                <option disabled>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="PTResource" class="text-danger"></span>
+                        </div>
+                        <div id="PT" class="form-group">
+                            <label asp-for="AdditionalPTResource" class="control-label"></label>
+                            <input asp-for="AdditionalPTResource" class="form-control" />
+                            <span asp-validation-for="AdditionalPTResource" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EIResource" class="control-label"></label>
+                            <button type="button" class="btn btn-info" onclick="EIShow()">+</button>
+                            <select asp-for="EIResource" class="form-control" asp-items="@ViewBag.EIResource">
+                                <option disabled>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="EIResource" class="text-danger"></span>
+                        </div>
+                        <div id="EI" class="form-group">
+                            <label asp-for="AdditionalEIResource" class="control-label"></label>
+                            <input asp-for="AdditionalEIResource" class="form-control" />
+                            <span asp-validation-for="AdditionalEIResource" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Periods</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <ul class="nav nav-pills">
+                            <li class="active">
+                                <a href="#fesability" data-toggle="tab" aria-expanded="true">Fesability</a>
+                            </li>
+                            <li class="">
+                                <a href="#conceptual" data-toggle="tab" aria-expanded="false">Conceptual</a>
+                            </li>
+                            <li>
+                                <a href="#definition" data-toggle="tab">Definition</a>
+                            </li>
+                            <li>
+                                <a href="#designConstruct" data-toggle="tab">Design&Construct</a>
+                            </li>
+                            <li>
+                                <a href="#startup" data-toggle="tab">Startup</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="fesability">
+                                <h4>Fesability</h4><br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="FesabilityEndDate" class="control-label"></label>
+                                    </div>
+                                    @if (Model.FesabilityEndDate != null)
+                                    {
+                                        var x = (Convert.ToDateTime(Model.FesabilityEndDate)).ToString("dd.MM.yyyy");
+                                        <label>@x</label>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group date" data-provider="datepicker">
+                                            <input asp-for="FesabilityEndDate" type="text" class="form-control" />
+                                            <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                        </div>
+
+                                    }
+                                    <span asp-validation-for="FesabilityEndDate" class="text-danger"></span>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="FesabilityActualEnd" class="control-label"></label>
+                                    </div>
+                                    <div class="input-group date" data-provider="datepicker">
+                                        <input asp-for="FesabilityActualEnd" type="text" class="form-control" />
+                                        <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                    </div>
+                                    <span asp-validation-for="FesabilityActualEnd" class="text-danger"></span>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <label asp-for="FesabilityComments" class="control-label"></label>
+                                    <textarea asp-for="FesabilityComments" cols="50" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="FesabilityComments" class="text-danger"></span>
+                                </div>
+                                <hr />
+                                
+                                <div class="panel panel-default">
+                                    <div class="panel panel-heading">
+                                        <h3>Deliverables</h3>
+                                    </div>
+                                    <div class="panel panel-body">
+                                        <div class="form-group">
+                                            <div class="checkbox col-md-offset-2">
+                                                <label>
+                                                    <input asp-for="FessabilityCharter" /> @Html.DisplayNameFor(model => model.FessabilityCharter)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox col-md-offset-2">
+                                                <label>
+                                                    <input asp-for="FesabilityPreliminary" /> @Html.DisplayNameFor(model => model.FesabilityPreliminary)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox col-md-offset-2">
+                                                <label>
+                                                    <input asp-for="FesabilityCapital" /> @Html.DisplayNameFor(model => model.FesabilityCapital)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox col-md-offset-2">
+                                                <label>
+                                                    <input asp-for="FesabilityLevel1" /> @Html.DisplayNameFor(model => model.FesabilityLevel1)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox col-md-offset-2">
+                                        <label>
+                                            <input asp-for="FesabilityComplete" /> @Html.DisplayNameFor(model => model.FesabilityComplete)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="conceptual">
+                                <h4>Conceptual</h4><br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="ConceptualEndDate" class="control-label"></label>
+                                    </div>
+                                    @if (Model.ConceptualEndDate == null)
+                                    {
+                                        <div class="input-group date" data-provider="datepicker">
+                                            <input asp-for="ConceptualEndDate" type="text" class="form-control" />
+                                            <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var x = (Convert.ToDateTime(Model.ConceptualEndDate)).ToString("dd.MM.yyyy");
+                                        <label>@x</label>
+
+                                    }
+                                    <span asp-validation-for="ConceptualEndDate" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="ConceptualActualEnd" class="control-label"></label>
+                                    </div>
+                                    <div class="input-group date" data-provider="datepicker">
+                                        <input asp-for="ConceptualActualEnd" type="text" class="form-control" />
+                                        <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                    </div>
+                                    <span asp-validation-for="ConceptualActualEnd" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label asp-for="ConceptualComments" class="control-label"></label>
+                                    <textarea asp-for="ConceptualComments" cols="50" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="ConceptualComments" class="text-danger"></span>
+                                </div>
+                                <br />
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3>Deliverables</h3>
+                                            </div>
+                                            <!-- .panel-heading -->
+                                            <div class="panel-body">
+                                                <div class="panel-group" id="accordione">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" class="collapsed">Select Technology Option</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualPreliminaryLayouts" /> @Html.DisplayNameFor(model => model.ConceptualPreliminaryLayouts)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualORA" /> @Html.DisplayNameFor(model => model.ConceptualORA)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualURD" /> @Html.DisplayNameFor(model => model.ConceptualURD)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualEquipmentList" /> @Html.DisplayNameFor(model => model.ConceptualEquipmentList)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="collapsed" aria-expanded="false">Develop Project Execution Strategy</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualPrimarySourcingPlan" /> @Html.DisplayNameFor(model => model.ConceptualPrimarySourcingPlan)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualPreliminaryExecution" /> @Html.DisplayNameFor(model => model.ConceptualPreliminaryExecution)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="collapsed" aria-expanded="false">Preliminary Funding</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="ConceptualPreliminaryFundiingPackage" /> @Html.DisplayNameFor(model => model.ConceptualPreliminaryFundiingPackage)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- .panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+                                    </div>
+                                    <!-- /.col-lg-12 -->
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox col-md-offset-2">
+                                        <label>
+                                            <input asp-for="ConceptualComplete" /> @Html.DisplayNameFor(model => model.ConceptualComplete)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="definition">
+                                <h4>Definition</h4><br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="DefinitionEndDate" class="control-label"></label>
+                                    </div>
+                                    @if (Model.DefinitionEndDate == null)
+                                    {
+                                        <div class="input-group date" data-provider="datepicker">
+                                            <input asp-for="DefinitionEndDate" type="text" class="form-control" />
+                                            <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var x = (Convert.ToDateTime(Model.DefinitionEndDate)).ToString("dd.MM.yyyy");
+                                        <label>@x</label>
+
+                                    }
+                                    <span asp-validation-for="DefinitionEndDate" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="DefinitionActualEnd" class="control-label"></label>
+                                    </div>
+                                    <div class="input-group date" data-provider="datepicker">
+                                        <input asp-for="DefinitionActualEnd" type="text" class="form-control" />
+                                        <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                    </div>
+                                    <span asp-validation-for="DefinitionActualEnd" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label asp-for="DefinitionComments" class="control-label"></label>
+                                    <textarea asp-for="DefinitionComments" cols="50" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="DefinitionComments" class="text-danger"></span>
+                                </div>
+                                <br />
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3>Deliverables</h3>
+                                            </div>
+                                            <!-- .panel-heading -->
+                                            <div class="panel-body">
+                                                <div class="panel-group" id="accordione">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion1" href="#collapseFour" aria-expanded="false" class="collapsed">Develop the Detailed Scope</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseFour" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionDesignBasis" /> @Html.DisplayNameFor(model => model.DefinitionDesignBasis)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionFinalLayout" /> @Html.DisplayNameFor(model => model.DefinitionFinalLayout)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignEquipmentSpecification" /> @Html.DisplayNameFor(model => model.DesignEquipmentSpecification)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion1" href="#collapseFive" class="collapsed" aria-expanded="false">Create the Project Execution Plan & Detailed Estimates</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseFive" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionRequestForQuotation" /> @Html.DisplayNameFor(model => model.DefinitionRequestForQuotation)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionFullStart" /> @Html.DisplayNameFor(model => model.DefinitionFullStart)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionLevel2" /> @Html.DisplayNameFor(model => model.DefinitionLevel2)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionProjectExecutionPlan" /> @Html.DisplayNameFor(model => model.DefinitionProjectExecutionPlan)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion1" href="#collapseSix" class="collapsed" aria-expanded="false">Finalize Definition</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseSix" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DefinitionFulllStartFunding" /> @Html.DisplayNameFor(model => model.DefinitionFulllStartFunding)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- .panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+                                    </div>
+                                    <!-- /.col-lg-12 -->
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox col-md-offset-2">
+                                        <label>
+                                            <input asp-for="DefinitionComplete" /> @Html.DisplayNameFor(model => model.DefinitionComplete)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="designConstruct">
+                                <h4>Design&Construct</h4><br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="DesignConstructEndDate" class="control-label"></label>
+                                    </div>
+                                    @if (Model.DesignConstructEndDate == null)
+                                    {
+                                        <div class="input-group date" data-provider="datepicker">
+                                            <input asp-for="DesignConstructEndDate" type="text" class="form-control" />
+                                            <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var x = (Convert.ToDateTime(Model.DesignConstructEndDate)).ToString("dd.MM.yyyy");
+                                        <label>@x</label>
+
+                                    }
+                                    <span asp-validation-for="DesignConstructEndDate" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="DesignConstructActualEnd" class="control-label"></label>
+                                    </div>
+                                    <div class="input-group date" data-provider="datepicker">
+                                        <input asp-for="DesignConstructActualEnd" type="text" class="form-control" />
+                                        <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                    </div>
+                                    <span asp-validation-for="DesignConstructActualEnd" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label asp-for="DesignConstructComments" class="control-label"></label>
+                                    <textarea asp-for="DesignConstructComments" cols="50" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="DesignConstructComments" class="text-danger"></span>
+                                </div>
+                                <br />
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3>Deliverables</h3>
+                                            </div>
+                                            <!-- .panel-heading -->
+                                            <div class="panel-body">
+                                                <div class="panel-group" id="accordione">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" class="collapsed">Design and Equipment Testing</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseSeven" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignDetailedAssembly" /> @Html.DisplayNameFor(model => model.DesignDetailedAssembly)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignIQPQProtocol" /> @Html.DisplayNameFor(model => model.DesignIQPQProtocol)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignVendorAcceptance" /> @Html.DisplayNameFor(model => model.DesignVendorAcceptance)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignEngineeringInformation" /> @Html.DisplayNameFor(model => model.DesignEngineeringInformation)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight" class="collapsed" aria-expanded="false">Deliverables Comment</a><i class="glyphicon glyphicon-arrow-down"></i>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapseEight" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignnLevel3" /> @Html.DisplayNameFor(model => model.DesignnLevel3)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="checkbox col-md-offset-2">
+                                                                        <label>
+                                                                            <input asp-for="DesignConstructionPlan" /> @Html.DisplayNameFor(model => model.DesignConstructionPlan)
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- .panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+                                    </div>
+                                    <!-- /.col-lg-12 -->
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox col-md-offset-2">
+                                        <label>
+                                            <input asp-for="DesignConstructnComplete" /> @Html.DisplayNameFor(model => model.DesignConstructnComplete)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="startup">
+                                <h4>Startup</h4><br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="StartupEndDate" class="control-label"></label>
+                                    </div>
+                                    @if (Model.StartupEndDate == null)
+                                    {
+                                        <div class="input-group date" data-provider="datepicker">
+                                            <input asp-for="StartupEndDate" type="text" class="form-control" />
+                                            <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var x = (Convert.ToDateTime(Model.StartupEndDate)).ToString("dd.MM.yyyy");
+                                        <label>@x</label>
+
+                                    }
+                                    <span asp-validation-for="StartupEndDate" class="text-danger"></span>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label asp-for="StartupActualEnd" class="control-label"></label>
+                                    </div>
+                                    <div class="input-group date" data-provider="datepicker">
+                                        <input asp-for="StartupActualEnd" type="text" class="form-control" />
+                                        <div class="input-group-addon glyphicon glyphicon-th"></div>
+                                    </div>
+                                    <span asp-validation-for="StartupActualEnd" class="text-danger"></span>
+                                </div>
+                                <br />
+
+                                <div class="panel panel-default">
+                                    <div class="panel panel-heading">
+                                        <h3>Deliverables</h3>
+                                    </div>
+                                    <div class="panel panel-body">
+                                        <div class="form-group">
+                                            <div class="checkbox col-md-offset-2">
+                                                <label>
+                                                    <input asp-for="StartupAppropriationCloseOut" /> @Html.DisplayNameFor(model => model.StartupAppropriationCloseOut)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="StartupComments" class="control-label"></label>
+                                    <textarea asp-for="StartupComments" cols="50" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="StartupComments" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        <h4>Other info</h4>
+                    </div>
+                    <div class="panel panel-body">
+                        <div class="form-group">
+                            <label asp-for="CM" class="control-label"></label>
+                            <input asp-for="CM" class="form-control" />
+                            <span asp-validation-for="CM" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ETC" class="control-label"></label>
+                            <input asp-for="ETC" class="form-control" />
+                            <span asp-validation-for="ETC" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ORA" class="control-label"></label>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <input type="range" asp-for="ORA" class="form-control" value="@Model.ORA" min="0" max="100" step="0.1" oninput="showVal(this.value)" onchange="showVal(this.value)" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label id="textORA">@Model.ORA %</label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="ORA" class="text-danger"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.FiscalYearOfCompletion)
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input asp-for="ActualSpending" /> @Html.DisplayNameFor(model => model.ActualSpending)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input asp-for="SuccesCriteriaMet" /> @Html.DisplayNameFor(model => model.SuccesCriteriaMet)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status" class="control-label"></label>
+                            <select asp-for="Status" class="form-control" asp-items="@ViewBag.Status">
+                                <option disabled>-----SELECT-----</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Comments" class="control-label"></label>
+                            <textarea cols="50" rows="5" asp-for="Comments" class="form-control"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Edit Project" class="btn btn-block btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script src="~/lib/bootstrap-sweetalert/dist/sweetalert.js"></script>
+
+<script>
+    function showVal(newVal) {
+        $('#textORA').text(newVal + " %");
+    }
+
+    $('#FesabilityEndDate').datepicker({
+        startDate: "@ViewBag.startDate",
+        endDate: "@ViewBag.endDate"
+    });
+    $('#FesabilityActualEnd').datepicker({
+        startDate: "@ViewBag.startDate"
+    });
+    $('#ConceptualEndDate').datepicker({
+        startDate: "@ViewBag.startDate",
+        endDate: "@ViewBag.endDate"
+    });
+    $('#ConceptualActualEnd').datepicker({
+        startDate: "@ViewBag.startDate"
+    });
+    $('#DefinitionEndDate').datepicker({
+        startDate: "@ViewBag.startDate",
+        endDate: "@ViewBag.endDate"
+    });
+    $('#DefinitionActualEnd').datepicker({
+        startDate: "@ViewBag.startDate"
+    });
+    $('#DesignConstructEndDate').datepicker({
+        startDate: "@ViewBag.startDate",
+        endDate: "@ViewBag.endDate"
+    });
+    $('#DesignConstructActualEnd').datepicker({
+        startDate: "@ViewBag.startDate",
+        endDate: "@ViewBag.endDate"
+    });
+    $('#StartupActualEnd').datepicker({
+        startDate: "@ViewBag.startDate"
+    });
+
+    $(document).ready(function () {
+        $('#PCIS').hide();
+        $('#PT').hide();
+        $('#EI').hide();
+        $('#STRT').hide();
+    })
+
+    function PCISShow() {
+        $('#PCIS').show();
+    };
+
+    function STRTShow() {
+        $('#STRT').show();
+    };
+
+    function PTShow() {
+        $('#PT').show();
+    };
+
+    function EIShow() {
+        $('#EI').show();
+    };
+</script>

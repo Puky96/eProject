@@ -1,0 +1,54 @@
+﻿@model IEnumerable<eProjects.Models.ManageViewModels.ProjectLeaderItem>
+
+@{ 
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<link href="~/lib/bootstrap-sweetalert/dist/sweetalert.css" rel="stylesheet" />
+
+<br />
+@Html.ActionLink("Add Project Leader", "AddProjectLeader", "Manage")
+<br />
+
+
+@(Html.Grid(Model)
+    .Build(columns =>
+    {
+        columns.Add(model => model.Fullname).Titled("Fullname").Filterable(true);
+        columns.Add(model => $"<button class=\"btn btn-info\" onclick=\"showPriorities('"+ model.UriName +"')\">!</button>").Titled("Priorities").Encoded(false);
+        columns.Add(model => model.Username).Titled("Username").Filterable(true);
+        columns.Add(model => model.Role).Titled("Role").Filterable(true);
+        columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Delete", "DeleteProjectLeader", new { projectLeader = model.Id })).Titled("Delete");
+        columns.Add(model => model.Id).RenderedAs(model => model.Role == "Project Leader" ? Html.ActionLink("Timeline", "ViewTimeline", "Report", new { projectLeader = model.Id}) : Html.ActionLink("","noAction"));
+    })
+     .Sortable()
+     .Pageable(pager =>
+     {
+         pager.RowsPerPage = 10;
+         pager.CurrentPage = 1;
+
+     })
+     .Empty("No project Leaders!")
+    )
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/MvcGrid/mvc-grid.js"></script>
+<script src="~/lib/bootstrap-sweetalert/dist/sweetalert.js"></script>
+<script>
+    $('.mvc-grid').mvcgrid();
+
+    function showPriorities(projectLeader) {
+        var jsonData = $.ajax({
+            url: '/Manage/RetrievePriorities?projectLeader=' + projectLeader,
+            dataType: 'json',
+            success: function (data) {
+                swal({
+                    title: data.title,
+                    type: data.type,
+                    text: data.text
+                });
+
+            }
+        });
+    }
+
+</script>

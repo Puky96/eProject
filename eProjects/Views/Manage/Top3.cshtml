@@ -1,0 +1,54 @@
+﻿@model eProjects.Models.ManageViewModels.Top3ViewModel
+
+@{
+    if (ViewBag.IsAdmin)
+    {
+        Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+}
+
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Top3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Option1" class="control-label"></label>
+                <select asp-for="Option1" class="form-control" asp-items="@ViewBag.Options1">
+                    <option disabled selected>-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="Option1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Option2" class="control-label"></label>
+                <select asp-for="Option2" class="form-control" asp-items="@ViewBag.Options2">
+                    <option disabled selected>-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="Option2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Option3" class="control-label"></label>
+                <select asp-for="Option3" class="form-control" asp-items="@ViewBag.Options3">
+                    <option disabled selected>-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="Option3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
