@@ -187,7 +187,7 @@ namespace eProjects.Controllers
 
             var projects = ctx.Masterplan.Where(x => x.ProjectLeader == leaderName && x.Status == "IN PROGRESS").ToList();
             if (projects.Count() == 0)
-                ViewBag.Message = "There are no projects to show timeline for! All completed or no project registered for " + leaderName + " yet";
+                ViewBag.Message = "There are no projects to show timeline for! All projects are completed or there is no project registered for " + leaderName + " yet";
 
             ViewBag.Projects = new SelectList(projects, "ProjectName", "ProjectName");
             var periods = new List<string> { "Feasibility", "Conceptual", "Definition", "Design&Construct", "Startup" };
@@ -223,9 +223,228 @@ namespace eProjects.Controllers
             return RedirectToAction("ViewTimeline", new { projectLeader = userId });
         }
 
-        public IActionResult Test()
+        public JsonResult RetrieveResourceTimeline(string resourceName, string resourceType)
+        {
+            List<Masterplan> projects = new List<Masterplan>();
+            if (resourceType == "PCIS")
+                projects = ctx.Masterplan.Where(x => x.PcisResource == resourceName).ToList();
+            if (resourceType == "PT")
+                projects = ctx.Masterplan.Where(x => x.Ptresource == resourceName).ToList();
+            if (resourceType == "EI")
+                projects = ctx.Masterplan.Where(x => x.Eiresource == resourceName).ToList();
+
+            JsonResponseModel model = new JsonResponseModel
+            {
+                Cols = new List<Col>()
+                    {
+                        new Col
+                        {
+                            Id = "",
+                            Label = "Project Name",
+                            Pattern = "",
+                            Type = "string",
+                            Role=""
+                        },
+                        new Col
+                        {
+                            Id="",
+                            Label ="Period",
+                            Pattern="",
+                            Type = "string",
+                            Role=""
+                        },
+                        new Col
+                        {
+                            Type="string",
+                            Role = "style",
+                            Id="",
+                            Pattern="",
+                            Label=""
+                        },
+                        new Col
+                        {
+                            Id ="",
+                            Label = "Start",
+                            Pattern="",
+                            Type = "date",
+                            Role=""
+                        },
+                        new Col
+                        {
+                            Id="",
+                            Label = "End",
+                            Pattern="",
+                            Type = "date",
+                            Role=""
+                        }
+                    },
+                Rows = new List<Row>()
+            };
+
+            foreach(var project in projects)
+            {
+                AddRows(model, project);
+            }
+
+            return Json(model);
+        }
+
+        public IActionResult GenerateReport()
         {
             return View();
+        }
+
+        public IActionResult ResourceTimeline()
+        {
+            return View();
+        }
+        
+        public JsonResult RetrieveResources(string resourceType)
+        {
+            if (resourceType == "PCIS")
+            {
+                var resources = ctx.Pcisresource.ToList();
+                var json = new List<JsonStandardResponse>();
+                foreach (var resource in resources)
+                    json.Add(new JsonStandardResponse
+                    {
+                        Id = resource.Id,
+                        Value = resource.Name
+                    });
+                return Json(json);
+            }
+
+            if (resourceType == "PT")
+            {
+                var resources = ctx.Ptresource.ToList();
+                var json = new List<JsonStandardResponse>();
+                foreach (var resource in resources)
+                    json.Add(new JsonStandardResponse
+                    {
+                        Id = resource.Id,
+                        Value = resource.Name
+                    });
+                return Json(json);
+            }
+
+            if (resourceType == "EI")
+            {
+                var resources = ctx.Eiresource.ToList();
+                var json = new List<JsonStandardResponse>();
+                foreach (var resource in resources)
+                    json.Add(new JsonStandardResponse
+                    {
+                        Id = resource.Id,
+                        Value = resource.Name
+                    });
+                return Json(json);
+            }
+
+            return null;
+        }
+
+        public IActionResult OnePager()
+        {
+            ViewBag.ProjectLeaders = new SelectList(ctx.Masterplan.Select(x => x.ProjectLeader).Distinct().ToList());
+
+            return View();
+        }
+
+        public JsonResult RetrieveProjects(string projectLeader)
+        {
+            var projects = ctx.Masterplan.Where(x => x.ProjectLeader == projectLeader).ToList();
+
+            List<JsonStandardResponse> json = new List<JsonStandardResponse>();
+            foreach (var project in projects)
+                json.Add(new JsonStandardResponse
+                {
+                    Id = project.Id,
+                    Value = project.ProjectName
+                });
+
+            return Json(json);
+        }
+
+        public JsonResult RetrieveMasterPlanData(string projectName, string projectLeader)
+        {
+            var project = ctx.Masterplan.FirstOrDefault(x => x.ProjectName == projectName && x.ProjectLeader == projectLeader);
+
+            MasterplanDetailsModel model = new MasterplanDetailsModel
+            {
+                ActualEndDate = project.ActualEndDate != null ? project.ActualEndDate.Value.ToString("dd.MM.yyyy") : "none",
+                ActualEndFiscalYear = project.ActualEndFiscalYear ?? "none",
+                ActualSpendingTargetEtc = project.ActualSpendingTargetEtc,
+                Category = project.Category,
+                Cm = project.Cm ?? 0,
+                ConceptualActualEnd = project.ConceptualActualEnd != null ? project.ConceptualActualEnd.Value.ToString("dd.MM.yyy") : "none",
+                ConceptualComments = project.ConceptualComments,
+                ConceptualCompleted = project.ConceptualCompleted,
+                ConceptualEnd = project.ConceptualEnd.Value.ToString("dd.MM.yyyy"),
+                ConceptualEquipmentList = project.ConceptualEquipmentList != null ? project.ConceptualEquipmentList.Value : false,
+                ConceptualOra = project.ConceptualOra != null ? project.ConceptualOra.Value : false,
+                ConceptualPreliminaryExecutionPlan = project.ConceptualPreliminaryExecutionPlan != null ? project.ConceptualPreliminaryExecutionPlan.Value : false,
+                ConceptualPreliminaryFundingPackage = project.ConceptualPreliminaryFundingPackage != null ? project.ConceptualPreliminaryFundingPackage.Value : false,
+                ConceptualPreliminaryLayouts = project.ConceptualPreliminaryLayouts != null ? project.ConceptualPreliminaryLayouts.Value : false,
+                ConceptualPreliminarySourcingPlan = project.ConceptualPreliminarySourcingPlan != null ? project.ConceptualPreliminarySourcingPlan.Value : false,
+                ConceptualUrd = project.ConceptualUrd != null ? project.ConceptualUrd.Value : false,
+                DefinitionActualEnd = project.DefinitionActualEnd != null ? project.DefinitionActualEnd.Value.ToString("dd.MM.yyyy") : "none",
+                DefinitionComments = project.DefinitionComments,
+                DefinitionDesignBasis = project.DefinitionDesignBasis != null ? project.DefinitionDesignBasis.Value : false,
+                DefinitionDone = project.DefinitionDone,
+                DefinitionEnd = project.DefinitionEnd.Value.ToString("dd.MM.yyyy"),
+                DefinitionEquipmentSpecification = project.DefinitionEquipmentSpecification != null ? project.DefinitionEquipmentSpecification.Value : false,
+                DefinitionFinalLayout = project.DefinitionFinalLayout != null ? project.DefinitionFinalLayout.Value : false,
+                DefinitionFullStartCapitalEstimate = project.DefinitionFullStartCapitalEstimate != null ? project.DefinitionFullStartCapitalEstimate.Value : false,
+                DefinitionFullStartFunding = project.DefinitionFullStartFunding != null ? project.DefinitionFullStartFunding.Value : false,
+                DefinitionLevel2 = project.DefinitionLevel2 != null ? project.DefinitionLevel2.Value : false,
+                DefinitionProjectExecutionPlan = project.DefinitionProjectExecutionPlan != null ? project.DefinitionProjectExecutionPlan.Value : false,
+                DefinitionRequestForQuotations = project.DefinitionRequestForQuotations != null ? project.DefinitionRequestForQuotations.Value : false,
+                DesignConstructActualEnd = project.DesignConstructActualEnd != null ? project.DesignConstructActualEnd.Value.ToString("dd.MM.yyyy") : "none",
+                DesignConstructcCompleted = project.DesignConstructcCompleted,
+                DesignConstructComments = project.DesignConstructComments,
+                DesignConstructEnd = project.DesignConstructEnd.Value.ToString("dd.MM.yyyy"),
+                DesignConstructionPlan = project.DesignConstructionPlan != null ? project.DesignConstructionPlan.Value : false,
+                DesignDetailedAnssembly = project.DesignDetailedAnssembly != null ? project.DesignDetailedAnssembly.Value : false,
+                DesignEngineeringInformation = project.DesignEngineeringInformation != null ? project.DesignEngineeringInformation.Value : false,
+                DesignIqpqprotocol = project.DesignIqpqprotocol != null ? project.DesignIqpqprotocol.Value : false,
+                DesignLevel3 = project.DesignLevel3 != null ? project.DesignLevel3.Value : false,
+                DesignVendorAcceptance = project.DesignVendorAcceptance != null ? project.DesignVendorAcceptance.Value : false,
+                Eiresource = project.Eiresource,
+                Etc = project.Etc ?? 0,
+                FesabilityActualEnd = project.FesabilityActualEnd != null ? project.FesabilityActualEnd.Value.ToString("dd.MM.yyyy") : "none",
+                FesabilityCapitalEstimate = project.FesabilityCapitalEstimate != null ? project.FesabilityCapitalEstimate.Value : false,
+                FesabilityCharter = project.FesabilityCharter != null ? project.FesabilityCharter.Value : false,
+                FesabilityComments = project.FesabilityComments,
+                FesabilityCompletetd = project.FesabilityCompletetd,
+                FesabilityEnd = project.FesabilityEnd.Value.ToString("dd.MM.yyyy"),
+                FesabilityLevel1 = project.FesabilityLevel1 != null ? project.FesabilityLevel1.Value : false,
+                FesabilityPreliminaryEquipmentList = project.FesabilityPreliminaryEquipmentList != null ? project.FesabilityPreliminaryEquipmentList.Value : false,
+                FiscalYearStart = project.FiscalYearStart,
+                FundingType = project.FundingType,
+                Id = project.Id,
+                ImpactedDepartment = project.ImpactedDepartment,
+                LeadingDepartment = project.LeadingDepartment,
+                MetSuccesCriteria = project.MetSuccesCriteria,
+                Ora = project.Ora ?? 0,
+                OtherComments = project.OtherComments,
+                PcisResource = project.PcisResource ?? "none",
+                PlantAe = project.PlantAe,
+                PredictedEndDate = project.PredictedEndDate.ToString("dd.MM.yyyy"),
+                PredictedEndFiscalYear = project.PredictedEndFiscalYear,
+                Priority = project.Priority,
+                ProjectLeader = project.ProjectLeader,
+                ProjectName = project.ProjectName,
+                ProjectType = project.ProjectType,
+                Ptresource = project.Ptresource ?? "none",
+                StartDate = project.StartDate.ToString("dd.MM.yyyy"),
+                StartupAppropriationCloseOut = project.StartupAppropriationCloseOut != null ? project.StartupAppropriationCloseOut.Value : false,
+                StartupComments = project.StartupComments,
+                StartupLeader = project.StartupLeader,
+                Status = project.Status,
+                TeamCharter = project.TeamCharter
+            };
+
+            return Json(model);
         }
     }
 }

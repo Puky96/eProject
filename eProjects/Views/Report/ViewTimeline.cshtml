@@ -48,8 +48,27 @@
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/bootstrap-sweetalert/dist/sweetalert.js"></script>
+<script src="~/js/loader.js"></script>
 
 <script>
+    google.charts.load('current', { 'packages': ['timeline'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var jsonData = $.ajax({
+            url: '/Report/RetrieveData?projectLeader=@ViewBag.ProjectLeader',
+            dataType: "json",
+            async: false
+        }).responseText;
+
+        // Create our data table out of JSON data loaded from server.
+        var data = new google.visualization.DataTable(jsonData);
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.Timeline(document.getElementById('timeline'));
+
+        chart.draw(data);  
+    }
 
     function checkComments() {
         var projectLeader = '@Model.Username';
@@ -78,26 +97,6 @@
 
     }
 
-    google.charts.load('current', { 'packages': ['timeline'] });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-        var jsonData = $.ajax({
-            url: '/Report/RetrieveData?projectLeader=@ViewBag.ProjectLeader',
-            dataType: "json",
-            async: false
-        }).responseText;
-
-
-
-        // Create our data table out of JSON data loaded from server.
-        var data = new google.visualization.DataTable(jsonData);
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.Timeline(document.getElementById('timeline'));
-
-        chart.draw(data);
-    }
 </script>
 
 

@@ -120,6 +120,7 @@ namespace eProjects.Controllers
                     DesignConstructEnd = model.DesignConstructEndDate,
                     Eiresource = model.AdditionalEIResource ?? model.EIResource,
                     Etc = model.ETC,
+                    Saving = model.Savings,
                     FesabilityActualEnd = null,
                     FesabilityComments = null,
                     FesabilityCompletetd = false,
@@ -257,7 +258,30 @@ namespace eProjects.Controllers
                 PcisResource = project.PcisResource,
                 ORA = project.Ora,
                 FiscalYearOfCompletion = project.ActualEndFiscalYear,
-                EIResource = project.Eiresource
+                EIResource = project.Eiresource,
+                FesabilityCapital = project.FesabilityCapitalEstimate != null ? project.FesabilityCapitalEstimate.Value : false,
+                FesabilityLevel1 = project.FesabilityLevel1 != null ? project.FesabilityLevel1.Value : false,
+                FesabilityPreliminary = project.FesabilityPreliminaryEquipmentList != null ? project.FesabilityPreliminaryEquipmentList.Value : false,
+                FessabilityCharter = project.FesabilityCharter != null ? project.FesabilityCharter.Value : false,
+                ConceptualPreliminaryLayouts = project.ConceptualPreliminaryLayouts != null ? project.ConceptualPreliminaryLayouts.Value : false,
+                ConceptualORA = project.ConceptualOra != null ? project.ConceptualOra.Value : false,
+                ConceptualURD = project.ConceptualUrd != null ? project.ConceptualUrd.Value : false,
+                ConceptualEquipmentList = project.ConceptualEquipmentList != null ? project.ConceptualEquipmentList.Value : false,
+                ConceptualPrimarySourcingPlan = project.ConceptualPreliminarySourcingPlan != null ? project.ConceptualPreliminarySourcingPlan.Value : false,
+                ConceptualPreliminaryExecution = project.ConceptualPreliminaryExecutionPlan != null ? project.ConceptualPreliminaryExecutionPlan.Value : false,
+                ConceptualPreliminaryFundiingPackage = project.ConceptualPreliminaryFundingPackage != null ? project.ConceptualPreliminaryFundingPackage.Value : false,
+                DefinitionDesignBasis = project.DefinitionDesignBasis != null ? project.DefinitionDesignBasis.Value : false,
+                DefinitionFinalLayout = project.DefinitionFinalLayout != null ? project.DefinitionFinalLayout.Value : false,
+                DesignEquipmentSpecification = project.DefinitionEquipmentSpecification != null ? project.DefinitionEquipmentSpecification.Value : false,
+                DefinitionRequestForQuotation = project.DefinitionRequestForQuotations != null ? project.DefinitionRequestForQuotations.Value : false,
+                DefinitionFullStart = project.DefinitionFullStartCapitalEstimate != null ? project.DefinitionFullStartCapitalEstimate.Value : false,
+                DesignDetailedAssembly = project.DesignDetailedAnssembly != null ? project.DesignDetailedAnssembly.Value : false,
+                DesignIQPQProtocol = project.DesignIqpqprotocol != null ? project.DesignIqpqprotocol.Value : false,
+                DesignVendorAcceptance = project.DesignVendorAcceptance != null ? project.DesignVendorAcceptance.Value : false,
+                DesignEngineeringInformation = project.DesignEngineeringInformation != null ? project.DesignEngineeringInformation.Value : false,
+                DesignnLevel3 = project.DesignLevel3 != null ? project.DesignLevel3.Value : false,
+                DesignConstructionPlan = project.DesignConstructionPlan != null ? project.DesignConstructionPlan.Value : false,
+                StartupAppropriationCloseOut = project.StartupAppropriationCloseOut != null ? project.StartupAppropriationCloseOut.Value : false
             };
 
             return View(model);
@@ -322,6 +346,39 @@ namespace eProjects.Controllers
             project.MetSuccesCriteria = model.SuccesCriteriaMet;
             project.Status = model.Status;
             project.OtherComments = model.Comments;
+            //deliverables
+            //feasibility
+            project.FesabilityCharter = model.FessabilityCharter;
+            project.FesabilityPreliminaryEquipmentList = model.FesabilityPreliminary;
+            project.FesabilityCapitalEstimate = model.FesabilityCapital;
+            project.FesabilityLevel1 = model.FesabilityLevel1;
+            //conceptual
+            project.ConceptualPreliminaryLayouts = model.ConceptualPreliminaryLayouts;
+            project.ConceptualOra = model.ConceptualORA;
+            project.ConceptualUrd = model.ConceptualURD;
+            project.ConceptualEquipmentList = model.ConceptualEquipmentList;
+            project.ConceptualPreliminarySourcingPlan = model.ConceptualPrimarySourcingPlan;
+            project.ConceptualPreliminaryExecutionPlan = model.ConceptualPreliminaryExecution;
+            project.ConceptualPreliminaryFundingPackage = model.ConceptualPreliminaryFundiingPackage;
+            //definition
+            project.DefinitionDesignBasis = model.DefinitionDesignBasis;
+            project.DefinitionFinalLayout = model.DefinitionFinalLayout;
+            project.DefinitionEquipmentSpecification = model.DesignEquipmentSpecification;
+            project.DefinitionRequestForQuotations = model.DefinitionRequestForQuotation;
+            project.DefinitionFullStartCapitalEstimate = model.DefinitionFullStart;
+            project.DefinitionLevel2 = model.DefinitionLevel2;
+            project.DefinitionProjectExecutionPlan = model.DefinitionProjectExecutionPlan;
+            project.DefinitionFullStartFunding = model.DefinitionFulllStartFunding;
+            //design
+            project.DesignDetailedAnssembly = model.DesignDetailedAssembly;
+            project.DesignIqpqprotocol = model.DesignIQPQProtocol;
+            project.DesignVendorAcceptance = model.DesignVendorAcceptance;
+            project.DesignEngineeringInformation = model.DesignEngineeringInformation;
+            project.DesignLevel3 = model.DesignnLevel3;
+            project.DesignConstructionPlan = model.DesignConstructionPlan;
+            //startup
+            project.StartupAppropriationCloseOut = model.StartupAppropriationCloseOut;
+
 
             ctx.Masterplan.Update(project);
             ctx.SaveChanges();

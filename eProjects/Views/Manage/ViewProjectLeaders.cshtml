@@ -18,7 +18,7 @@
         columns.Add(model => model.Username).Titled("Username").Filterable(true);
         columns.Add(model => model.Role).Titled("Role").Filterable(true);
         columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Delete", "DeleteProjectLeader", new { projectLeader = model.Id })).Titled("Delete");
-        columns.Add(model => model.Id).RenderedAs(model => model.Role == "Project Leader" ? Html.ActionLink("Timeline", "ViewTimeline", "Report", new { projectLeader = model.Id}) : Html.ActionLink("","noAction"));
+        columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Timeline", "ViewTimeline", "Report", new { projectLeader = model.Id})).Titled("Timeline");
     })
      .Sortable()
      .Pageable(pager =>

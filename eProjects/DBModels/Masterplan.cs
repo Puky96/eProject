@@ -13,6 +13,7 @@ namespace eProjects.DBModels
         public string PcisResource { get; set; }
         public string Ptresource { get; set; }
         public string Eiresource { get; set; }
+        public int Saving { get; set; }
         public DateTime StartDate { get; set; }
         public string FiscalYearStart { get; set; }
         public bool PlantAe { get; set; }

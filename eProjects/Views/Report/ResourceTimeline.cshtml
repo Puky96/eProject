@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "ResourceTimeline";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<h2>ResourceTimeline</h2>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div id="type" class="form-group">
+            <label class="control-label">Resource Type</label>
+            <select id="resourceType" class="form-control" >
+                <option disabled selected>-----SELECT-----</option>
+                <option value="PCIS">PC&IS</option>
+                <option>PT</option>
+                <option value="EI">E&I</option>
+            </select>
+        </div>
+        <div id="type" class="form-group">
+            <label class="control-label">Resource Name</label>
+            <select id="resourceName" class="form-control">
+                <option disabled selected>-----SELECT-----</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-default" onclick="drawChart()">Alert</button>
+<br />
+<hr />
+<div id="timeline" style="height: 400px; width: 5000px;"></div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script>
+    $('#resourceType').change(function () {
+        $.get("/Report/RetrieveResources", { resourceType: $("#resourceType").val() }, function (data) {
+            $("#resourceName").empty();
+            $.each(data, function (index, row) {
+                $("#resourceName").append("<option value ='" + row.value + "'>" + row.value + "</option>")
+            })
+        })
+    })
+
+    google.charts.load('current', { 'packages': ['timeline'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var jsonData = $.ajax({
+            url: '/Report/RetrieveResourceTimeline?resourceName=' + $('#resourceName').val() + '&resourceType=' + $('#resourceType').val(),
+            dataType: "json",
+            async: false
+        }).responseText;
+
+
+        // Create our data table out of JSON data loaded from server.
+        var data = new google.visualization.DataTable(jsonData);
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.Timeline(document.getElementById('timeline'));
+
+        chart.draw(data);
+    }
+
+</script>
+
+

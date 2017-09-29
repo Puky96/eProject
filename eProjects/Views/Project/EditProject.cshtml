@@ -46,7 +46,7 @@
                             <label asp-for="PcisResource" class="control-label"></label>
                             <button type="button" class="btn btn-info" onclick="PCISShow()">+</button>
                             <select asp-for="PcisResource" class="form-control" asp-items="@ViewBag.PcisResource">
-                                <option disabled>-----SELECT-----</option>
+                                <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="PcisResource" class="text-danger"></span>
                         </div>
@@ -59,7 +59,7 @@
                             <label asp-for="PTResource" class="control-label"></label>
                             <button type="button" class="btn btn-info" onclick="PTShow()">+</button>
                             <select asp-for="PTResource" class="form-control" asp-items="@ViewBag.PTResource">
-                                <option disabled>-----SELECT-----</option>
+                                <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="PTResource" class="text-danger"></span>
                         </div>
@@ -72,7 +72,7 @@
                             <label asp-for="EIResource" class="control-label"></label>
                             <button type="button" class="btn btn-info" onclick="EIShow()">+</button>
                             <select asp-for="EIResource" class="form-control" asp-items="@ViewBag.EIResource">
-                                <option disabled>-----SELECT-----</option>
+                                <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="EIResource" class="text-danger"></span>
                         </div>

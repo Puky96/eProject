@@ -26,7 +26,7 @@ namespace eProjects.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-        private string defaultAssignedPassword = "3WFosqON°#LlU&5Cy&o(>c<WV_$SH,9A";
+        private string defaultAssignedPassword = "++* ";
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
