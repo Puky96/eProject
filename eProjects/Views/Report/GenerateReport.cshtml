@@ -1,11 +1,27 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "GenerateReport";
-    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    if(ViewBag.IsAdmin)
+    {
+        Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
 }
 
 <br />
-@Html.ActionLink("See timeline for resources", "ResourceTimeline", "Report")
-<br />
-@Html.ActionLink("Project Details", "OnePager", "Report")
+<a class="btn btn-primary" href="@Url.Action("ResourceTimeline","Report")">See timeline for resources</a>
+<br /><br />
+<a class="btn btn-primary" href="@Url.Action("OnePager","Report")">Project Details</a>
+<br /><br />
+<a class="btn btn-primary" href="@Url.Action("LateProjects","Report")">Check Late Projects</a>
+<br /><br />
+<a class="btn btn-primary" href="@Url.Action("Savings","Report")">Check Savings</a>
+<br /><br />
+<a class="btn btn-primary" href="@Url.Action("OngoingProjects","Report")">Ongoing Projects</a>
+<br /><br />
+<a class="btn btn-primary" href="@Url.Action("Top3","Report")">Top 3 Priorities</a>
+<br /><br />
+
 

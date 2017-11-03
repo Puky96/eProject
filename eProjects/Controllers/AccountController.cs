@@ -14,6 +14,7 @@ using eProjects.Models;
 using eProjects.Models.AccountViewModels;
 using eProjects.Services;
 using Novell.Directory.Ldap;
+using eProjects.DBModels;
 
 namespace eProjects.Controllers
 {
@@ -26,7 +27,8 @@ namespace eProjects.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-        private string defaultAssignedPassword = "++* ";
+        private string defaultAssignedPassword = "3WFosqON°#LlU&5Cy&o(>c<WV_$SH,9A";
+        private readonly eProjectsCTX ctx;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -40,6 +42,7 @@ namespace eProjects.Controllers
             _roleManager = roleManager;
             _emailSender = emailSender;
             _logger = logger;
+            ctx = new eProjectsCTX();
         }
 
         [TempData]
@@ -70,6 +73,8 @@ namespace eProjects.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    var user = await _userManager.FindByEmailAsync(model.UserName + "@pg.com");
+                    CheckIfLate(user);
                     return RedirectToAction("ShowLandingPage");
                 }
             }
@@ -115,6 +120,8 @@ namespace eProjects.Controllers
                         cn.Bind(usr, psw);
 
                         var result = await _signInManager.PasswordSignInAsync(model.UserName, defaultAssignedPassword, false, lockoutOnFailure: false);
+                        var user1 = await _userManager.FindByEmailAsync(model.UserName + "@pg.com");
+                        CheckIfLate(user1);
 
                         return RedirectToAction("ShowLandingPage");
                     }
@@ -145,6 +152,51 @@ namespace eProjects.Controllers
                 return RedirectToAction("ViewProjects", "Project");
 
             return RedirectToAction("Index", "Home");
+        }
+
+        private void CheckIfLate(ApplicationUser user)
+        { 
+            var projects = ctx.Masterplan.Where(x => x.ProjectLeader == user.Fullname && x.Status == "IN PROGRESS").ToList();
+            var date2Compare = DateTime.Now;
+
+            foreach(var project in projects)
+            {
+                var late = ctx.ProjectLate.FirstOrDefault(x => x.ProjectId == project.Id);
+                if (late == null)
+                {
+                    ctx.ProjectLate.Add(new ProjectLate
+                    {
+                        ProjectId = project.Id,
+                        ConceptualLate = false,
+                        StartupLate = false,
+                        FesabilityLate = false,
+                        DesignConstructLate = false,
+                        DefinitionLate = false
+                    });
+                    ctx.SaveChanges();
+                }
+
+                late = ctx.ProjectLate.FirstOrDefault(x => x.ProjectId == project.Id);
+
+                if (date2Compare.CompareTo(project.FesabilityEnd) > 0 && project.FesabilityCompletetd == false)
+                    late.FesabilityLate = true;
+
+                if (date2Compare.CompareTo(project.ConceptualEnd) > 0 && project.ConceptualCompleted == false)
+                    late.ConceptualLate = true;
+
+                if (date2Compare.CompareTo(project.DesignConstructEnd) > 0 && project.DesignConstructcCompleted == false)
+                    late.DesignConstructLate = true;
+
+                if (date2Compare.CompareTo(project.DefinitionEnd) > 0 && project.DefinitionDone == false)
+                    late.DefinitionLate = true;
+
+                if (date2Compare.CompareTo(project.PredictedEndDate) > 0 && project.Status != "COMPLETE")
+                    late.FesabilityLate = true;
+
+                ctx.Update(late);
+                ctx.SaveChanges();
+
+            }
         }
 
         //public async Task<IActionResult> AddUserToRoles()

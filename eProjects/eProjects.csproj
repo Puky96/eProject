@@ -7,6 +7,9 @@
 
 
   <ItemGroup>
+    <PackageReference Include="jsreport.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="jsreport.Binary" Version="1.8.2" />
+    <PackageReference Include="jsreport.Local" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="2.0.0" />

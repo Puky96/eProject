@@ -26,6 +26,7 @@ namespace eProjects.Controllers
         [HttpGet]
         public IActionResult AddProject(string message)
         {
+            ViewBag.IsAdmin = _userManager.IsInRoleAsync(_userManager.FindByNameAsync(User.Identity.Name).Result, "Administrator").Result;
             ViewBag.Message = message;
             if (User.Identity.Name == "URLT-Admin")
                 return RedirectToAction("ViewProjectLeaders", "Manage");
@@ -67,10 +68,22 @@ namespace eProjects.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProject(AddProjectViewModel model)
+        public async Task<IActionResult> AddProject(AddProjectViewModel model, string errorMessage = null)
         {
+            ViewBag.ErrorMessage = errorMessage;
             if (ModelState.IsValid)
             {
+                if (CompareDate(model.StartDate, model.FesabilityEndDate.Value))
+                    return await AddProject(model, "Feasibility: End Date is before Start Date");
+                if (CompareDate(model.FesabilityEndDate.Value, model.ConceptualEndDate.Value))
+                    return await AddProject(model, "Conceptual: End Date is before Start Date");
+                if (CompareDate(model.ConceptualEndDate.Value, model.DefinitionEndDate.Value))
+                    return await AddProject(model, "Definition: End Date is before Start Date");
+                if (CompareDate(model.DefinitionEndDate.Value, model.DesignConstructEndDate.Value))
+                    return await AddProject(model, "Design&Construct: End Date is before Start Date");
+                if (CompareDate(model.DesignConstructEndDate.Value, model.PredictedEndDate))
+                    return await AddProject(model, "Startup: End Date is before Start Date");
+
                 if (model.StartupLeader == null && model.AdditionalStartupLeader == null)
                     return AddProject("Select Startup leader or add a new one!");
 
@@ -151,7 +164,7 @@ namespace eProjects.Controllers
                 ctx.Masterplan.Add(project2Add);
                 ctx.SaveChanges();
 
-                return AddProject("Project succesfully added!");
+                return RedirectToAction("ViewProjects","Project", new { message = "Project succesfully added!" });
             }
 
             return View(model);
@@ -167,8 +180,10 @@ namespace eProjects.Controllers
                 return (year % 100).ToString() + "/" + ((year + 1) % 100).ToString();
         }
 
-        public async Task<IActionResult> ViewProjects()
+        public async Task<IActionResult> ViewProjects(string message = null)
         {
+            ViewBag.Message = message;
+
             var user = (await _userManager.FindByNameAsync(User.Identity.Name));
             var roles = await _userManager.GetRolesAsync(user);
             var projects = new List<Masterplan>();
@@ -199,6 +214,12 @@ namespace eProjects.Controllers
         public ActionResult EditProject(int projectId)
         {
             var project = ctx.Masterplan.FirstOrDefault(x => x.Id == projectId);
+
+            var pl = ctx.AspNetUsers.Where(x=> x.Fullname != "URLT-Admin").Select(x => x.Fullname).ToList();
+            ViewBag.ProjectLeaders = new SelectList(pl, project.ProjectLeader);
+
+            var leaders = ctx.Leaders.Select(x => x.Name).ToList();
+            ViewBag.Leaders = new SelectList(leaders, project.StartupLeader);
 
             ViewBag.IsAdmin = _userManager.IsInRoleAsync(_userManager.FindByNameAsync(User.Identity.Name).Result, "Administrator").Result;
 
@@ -305,12 +326,19 @@ namespace eProjects.Controllers
                 ctx.Ptresource.Add(new Ptresource { Name = model.AdditionalPTResource });
                 ctx.SaveChanges();
             }
+            if(model.AdditionalStartupLeader != null)
+            {
+                ctx.Leaders.Add(new Leaders { Name = model.AdditionalStartupLeader });
+                ctx.SaveChanges();
+            }
 
             var project = ctx.Masterplan.FirstOrDefault(x => x.Id == model.Id);
             project.Cm = model.CM ?? project.Cm;
             project.PcisResource = model.AdditionalPcisResource ?? model.PcisResource;
             project.Ptresource = model.AdditionalPTResource ?? model.PTResource;
             project.Eiresource = model.AdditionalEIResource ?? model.EIResource;
+            project.StartupLeader = model.AdditionalStartupLeader ?? model.StartupLeader;
+            project.ProjectLeader = model.ProjectLeader;
             project.Etc = model.ETC;
             project.Ora = model.ORA;
             //fesability
@@ -396,6 +424,18 @@ namespace eProjects.Controllers
 
             return RedirectToAction("ViewProjects");
         }
+
+        
+
+        private bool CompareDate(DateTime startDate, DateTime endDate)
+        {
+            if (startDate.CompareTo(endDate) > 0)
+                return true;
+            else
+                return false;
+        }
+
+
 
     }
 }

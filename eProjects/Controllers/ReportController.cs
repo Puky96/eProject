@@ -9,6 +9,9 @@ using eProjects.Models.ReportViewModels;
 using eProjects.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using eProjects.Models.ProjectViewModels;
+using jsreport.AspNetCore;
+using jsreport.Types;
 
 namespace eProjects.Controllers
 {
@@ -291,6 +294,9 @@ namespace eProjects.Controllers
 
         public IActionResult GenerateReport()
         {
+            var usr = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            ViewBag.IsAdmin = _userManager.IsInRoleAsync(usr, "Administrator").Result;
+
             return View();
         }
 
@@ -365,7 +371,7 @@ namespace eProjects.Controllers
             return Json(json);
         }
 
-        public JsonResult RetrieveMasterPlanData(string projectName, string projectLeader)
+        public JsonResult RetrieveMasterPlanData(string projectName = "eProjects - dashboard", string projectLeader = "Costea Sorin")
         {
             var project = ctx.Masterplan.FirstOrDefault(x => x.ProjectName == projectName && x.ProjectLeader == projectLeader);
 
@@ -445,6 +451,131 @@ namespace eProjects.Controllers
             };
 
             return Json(model);
+        }
+
+        private List<SavingsListItem> RetrieveSavings()
+        {
+            var projects = ctx.Masterplan.ToList();
+            var list = new List<SavingsListItem>();
+            foreach (var project in projects)
+            {
+                list.Add(new SavingsListItem
+                {
+                    ProjectName = project.ProjectName,
+                    ProjectLeader = project.ProjectLeader,
+                    DueDate = project.PredictedEndDate.ToString("dd.MM.yyyy"),
+                    Savings = project.Saving.ToString()
+                });
+            }
+
+            return list;
+        }
+
+        private List<LateProjectListItem> RetrieveLateProjects()
+        {
+            var projects = ctx.Masterplan.ToList();
+            var list = new List<LateProjectListItem>();
+            foreach(var project in projects)
+            {
+                var late = ctx.ProjectLate.FirstOrDefault(x => x.ProjectId == project.Id);
+                if (CheckIfIsLate(late))
+                {
+                    list.Add(new LateProjectListItem
+                    {
+                        ConceptualComments = project.ConceptualComments,
+                        ConceptualLate = late.ConceptualLate,
+                        DefinitionComments = project.DefinitionComments,
+                        DefinitionLate = late.DefinitionLate,
+                        DesignConstructComments = project.DesignConstructComments,
+                        DesignConstructLate = late.DesignConstructLate,
+                        FeasibilityComments = project.FesabilityComments,
+                        FeasibilityLate = late.FesabilityLate,
+                        ProjectName = project.ProjectName,
+                        StartupComments = project.StartupComments,
+                        StartupLate = late.StartupLate
+                    });
+                }
+            }
+
+            return list;
+        }
+
+        private List<OngoingProjectsListItem> RetrieveOngoingProjects()
+        {
+            var projects = ctx.Masterplan.Where(x => x.Status == "IN PROGRESS").ToList();
+            var list = new List<OngoingProjectsListItem>();
+
+            foreach(var project in projects)
+            {
+                var late = ctx.ProjectLate.FirstOrDefault(x => x.ProjectId == project.Id);
+                list.Add(new OngoingProjectsListItem
+                {
+                    ProjectName = project.ProjectName,
+                    DueDate = project.PredictedEndDate.ToString("dd.MM.yyyy"),
+                    StartDate = project.StartDate.ToString("dd.MM.yyyy"),
+                    IsLate = CheckIfIsLate(late)
+                });
+            }
+
+            return list;
+        }
+
+        private List<Top3ListItem> RetrieveTop3Priorities()
+        {
+            var tops = ctx.Top3.ToList();
+            var list = new List<Top3ListItem>();
+
+            foreach (var top in tops)
+                list.Add(new Top3ListItem
+                {
+                    ProjectLeader = top.ProjectLeader,
+                    Priority1 = top.Option1,
+                    Priority2 = top.Option2,
+                    Priority3 = top.Option3
+                });
+
+            return list;
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public IActionResult Savings()
+        {
+            var model = RetrieveSavings();
+
+            HttpContext.JsReportFeature().Recipe(Recipe.PhantomPdf);
+            return View(model);
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public IActionResult OngoingProjects()
+        {
+            var model = RetrieveOngoingProjects();
+            HttpContext.JsReportFeature().Recipe(Recipe.PhantomPdf);
+
+            return View(model);
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public IActionResult LateProjects()
+        {
+            var model = RetrieveLateProjects();
+            HttpContext.JsReportFeature().Recipe(Recipe.PhantomPdf);
+
+            return View(model);
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public IActionResult Top3()
+        {
+            var model = RetrieveTop3Priorities();
+            HttpContext.JsReportFeature().Recipe(Recipe.PhantomPdf);
+
+            return View(model);
+        }
+
+        private bool CheckIfIsLate(ProjectLate latency)
+        {
+            return latency.FesabilityLate || latency.ConceptualLate || latency.DefinitionLate || latency.DesignConstructLate || latency.StartupLate;
         }
     }
 }

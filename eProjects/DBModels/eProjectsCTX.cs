@@ -21,6 +21,7 @@ namespace eProjects.DBModels
         public virtual DbSet<LeadingDepartment> LeadingDepartment { get; set; }
         public virtual DbSet<Masterplan> Masterplan { get; set; }
         public virtual DbSet<Pcisresource> Pcisresource { get; set; }
+        public virtual DbSet<ProjectLate> ProjectLate { get; set; }
         public virtual DbSet<ProjectType> ProjectType { get; set; }
         public virtual DbSet<Ptresource> Ptresource { get; set; }
         public virtual DbSet<Status> Status { get; set; }
@@ -31,7 +32,7 @@ namespace eProjects.DBModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Data Source=TESTINTERN-PC\SQLEXPRESS;Initial Catalog=eProjects;Integrated Security=False;User ID=sa;Password=Parola00;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer(@"Data Source=PF0SEPEM-X7\SQLEXPRESS;Initial Catalog=eProjects;Integrated Security=False;User ID=sa;Password=Parola00;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 

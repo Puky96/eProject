@@ -24,6 +24,7 @@ namespace eProjects.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
@@ -35,11 +36,13 @@ namespace eProjects.Controllers
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
+          RoleManager<IdentityRole> roleManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
@@ -51,8 +54,10 @@ namespace eProjects.Controllers
 
         [HttpGet]
         [Authorize(Roles ="Administrator")]
-        public async Task<IActionResult> ViewProjectLeaders()
+        public async Task<IActionResult> ViewProjectLeaders(string message)
         {
+            ViewBag.Message = message;
+
             var projectLeaders = await _userManager.GetUsersInRoleAsync("ProjectLeader");
 
             var ProjectLeaders = new List<ProjectLeaderItem>();
@@ -77,6 +82,27 @@ namespace eProjects.Controllers
                     Role = "Administrator"
                 });
 
+            var resources = await _userManager.GetUsersInRoleAsync("Resource");
+            foreach (var resource in resources)
+                ProjectLeaders.Add(new ProjectLeaderItem
+                {
+                    Id = resource.Id,
+                    UriName = resource.Fullname.Replace(" ", "%20"),
+                    Fullname = resource.Fullname,
+                    Username = resource.UserName,
+                    Role = "Resource"
+                });
+
+            var sLeaders = await _userManager.GetUsersInRoleAsync("StartupLeader");
+            foreach (var sLeader in sLeaders)
+                ProjectLeaders.Add(new ProjectLeaderItem
+                {
+                    Id = sLeader.Id,
+                    UriName = sLeader.Fullname.Replace(" ", "%20"),
+                    Fullname = sLeader.Fullname,
+                    Username = sLeader.UserName,
+                    Role = "Startup Leader"
+                });
 
             return View(ProjectLeaders.OrderBy(x => x.Username));
         }
@@ -214,10 +240,140 @@ namespace eProjects.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult ManageResources()
+        {
+            var startup = ctx.Leaders.ToList();
+            ViewBag.SatrtupLeaders = new SelectList(startup, "Id", "Name");
+
+            var pcis = ctx.Pcisresource.ToList();
+            ViewBag.Pcis = new SelectList(pcis, "Id", "Name");
+
+            var pt = ctx.Ptresource.ToList();
+            ViewBag.Pt = new SelectList(pt, "Id", "Name");
+
+            var ei = ctx.Eiresource.ToList();
+            ViewBag.Ei = new SelectList(ei, "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult ManageResources(string StartupLeader, string Pcis, string PT, string EI)
+        {
+            if (StartupLeader != null)
+            {
+                var sl = ctx.Leaders.FirstOrDefault(x => x.Id == Convert.ToInt32(StartupLeader));
+                ctx.Leaders.Remove(sl);
+                ctx.SaveChanges();
+            }
+
+            if (Pcis != null)
+            {
+                var pcis = ctx.Pcisresource.FirstOrDefault(x => x.Id == Convert.ToInt32(Pcis));
+                ctx.Pcisresource.Remove(pcis);
+                ctx.SaveChanges();
+            }
+
+            if (PT != null)
+            {
+                var pt = ctx.Ptresource.FirstOrDefault(x => x.Id == Convert.ToInt32(PT));
+                ctx.Ptresource.Remove(pt);
+                ctx.SaveChanges();
+            }
+
+            if (EI != null)
+            {
+                var ei = ctx.Eiresource.FirstOrDefault(x => x.Id == Convert.ToInt32(EI));
+                ctx.Eiresource.Remove(ei);
+                ctx.SaveChanges();
+            }
+
+
+            return RedirectToAction("ViewProjectLeaders", "Manage", new { message = "Resources succesfullly deleted!" });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddResource()
+        {
+            var resourceList = new List<string> { "Startup Leader", "PC&IS", "P&T", "E&I" };
+            ViewBag.Options = new SelectList(resourceList);
+
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Administrator")]
+        public async Task<IActionResult> AddResource(AddResourceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userManager.FindByNameAsync(model.UserName);
+                if(result == null)
+                {
+                    var user = new ApplicationUser { UserName = model.UserName, Fullname = model.Fullname, Email = model.UserName + "@pg.com" };
+                    await _userManager.CreateAsync(user, defaultAssignedPassword);
+                }
+                else
+                {
+                    model.Fullname = result.Fullname;
+                }
+
+                var usr = await _userManager.FindByNameAsync(model.UserName);
+                
+                if(model.ResourceType == "Startup Leader")
+                {
+                    ctx.Leaders.Add(new Leaders
+                    {
+                        Name = model.Fullname
+                    });
+                    ctx.SaveChanges();
+                    await _userManager.AddToRoleAsync(usr, "StartupLeader");
+                }
+
+                if(model.ResourceType == "PC&IS")
+                {
+                    ctx.Pcisresource.Add(new Pcisresource
+                    {
+                        Name = model.Fullname
+                    });
+                    ctx.SaveChanges();
+                    await _userManager.AddToRoleAsync(usr, "Resource");
+                }
+
+                if(model.ResourceType == "P&T")
+                {
+                    ctx.Ptresource.Add(new Ptresource
+                    {
+                        Name = model.Fullname
+                    });
+                    ctx.SaveChanges();
+                    await _userManager.AddToRoleAsync(usr, "Resource");
+                }
+
+                if(model.ResourceType == "E&I")
+                {
+                    ctx.Eiresource.Add(new Eiresource
+                    {
+                        Name = model.Fullname
+                    });
+                    ctx.SaveChanges();
+                    await _userManager.AddToRoleAsync(usr, "Resource");
+                }
+
+                return RedirectToAction("ViewProjectLeaders", "Manage", new { message = "Resource succesfully added!" });
+            }
+
+            return View(model);
+        }
 
 
 
-        
+
+
 
         #region Helpers
 

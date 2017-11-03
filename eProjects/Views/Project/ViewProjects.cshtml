@@ -13,7 +13,8 @@
 <br />
 @Html.ActionLink("Add Project", "AddProject", "Project")
 <br />
-
+<label class="text-success">@ViewBag.Message</label>
+<br />
 @(Html.Grid(Model)
     .Build(columns =>
     {

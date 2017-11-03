@@ -13,6 +13,9 @@ namespace eProjects.Models.ProjectViewModels
         [Display(Name = "Project Name")]
         public string ProjectName { get; set; }
 
+        [Display(Name ="Other Startup Leader")]
+        public string AdditionalStartupLeader { get; set; }
+
         [Display(Name ="Startup Leader")]
         public string StartupLeader { get; set; }
 

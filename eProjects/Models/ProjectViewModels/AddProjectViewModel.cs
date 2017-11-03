@@ -15,7 +15,7 @@ namespace eProjects.Models.ProjectViewModels
         [Display(Name = "Startup Leader")]
         public string StartupLeader { get; set; }
 
-        [Display(Name = "Saving * ")]
+        [Display(Name = "Saving * ($)")]
         public int Savings { get; set; }
 
         [Display(Name = "Other Startup Leader")]
@@ -52,7 +52,7 @@ namespace eProjects.Models.ProjectViewModels
         [Display(Name = "Team Charter")]
         public bool TeamCharter { get; set; }
 
-        [Display(Name = "ETC")]
+        [Display(Name = "ETC ($)")]
         public int ? ETC { get; set; }
 
         [Display(Name = "Priority *")]

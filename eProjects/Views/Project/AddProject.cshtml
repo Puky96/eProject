@@ -2,6 +2,13 @@
 
 @{
     ViewData["Title"] = "AddProject";
+}
+@if (ViewBag.IsAdmin)
+{
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+else
+{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -60,55 +67,35 @@
                     <div class="panel panel-body">
                         <div class="form-group">
                             <label asp-for="StartupLeader" class="control-label"></label>
-                            <button type="button" class="btn btn-info" onclick="STRTShow()">+</button>
+                            <a href="/Manage/AddResource" class="btn btn-success">+</a>
                             <select asp-for="StartupLeader" class="form-control" asp-items="@ViewBag.StartupLeaders">
                                 <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="StartupLeader" class="text-danger"></span>
                         </div>
-                        <div id="STRT" class="form-group">
-                            <label asp-for="AdditionalStartupLeader" class="control-label"></label>
-                            <input asp-for="AdditionalStartupLeader" class="form-control" />
-                            <span asp-validation-for="AdditionalStartupLeader" class="text-danger"></span>
-                        </div>
                         <div class="form-group">
                             <label asp-for="PcisResource" class="control-label"></label>
-                            <button type="button" class="btn btn-info" onclick="PCISShow()">+</button>
+                            <a href="/Manage/AddResource" class="btn btn-success">+</a>
                             <select asp-for="PcisResource" class="form-control" asp-items="@ViewBag.PcisResource">
                                 <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="PcisResource" class="text-danger"></span>
                         </div>
-                        <div id="PCIS" class="form-group">
-                            <label asp-for="AdditionalPcisResource" class="control-label"></label>
-                            <input asp-for="AdditionalPcisResource" class="form-control" />
-                            <span asp-validation-for="AdditionalPcisResource" class="text-danger"></span>
-                        </div>
                         <div class="form-group">
                             <label asp-for="PTResource" class="control-label"></label>
-                            <button type="button" class="btn btn-info" onclick="PTShow()">+</button>
+                            <a href="/Manage/AddResource" class="btn btn-success">+</a>
                             <select asp-for="PTResource" class="form-control" asp-items="@ViewBag.PTResource">
                                 <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="PTResource" class="text-danger"></span>
                         </div>
-                        <div id="PT" class="form-group">
-                            <label asp-for="AdditionalPTResource" class="control-label"></label>
-                            <input asp-for="AdditionalPTResource" class="form-control" />
-                            <span asp-validation-for="AdditionalPTResource" class="text-danger"></span>
-                        </div>
                         <div class="form-group">
                             <label asp-for="EIResource" class="control-label"></label>
-                            <button type="button" class="btn btn-info" onclick="EIShow()">+</button>
+                            <a href="/Manage/AddResource" class="btn btn-success">+</a>
                             <select asp-for="EIResource" class="form-control" asp-items="@ViewBag.EIResource">
                                 <option disabled selected>-----SELECT-----</option>
                             </select>
                             <span asp-validation-for="EIResource" class="text-danger"></span>
-                        </div>
-                        <div id="EI" class="form-group">
-                            <label asp-for="AdditionalEIResource" class="control-label"></label>
-                            <input asp-for="AdditionalEIResource" class="form-control" />
-                            <span asp-validation-for="AdditionalEIResource" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -303,5 +290,68 @@
     function EIShow() {
         $('#EI').show();
     };
+
+    $('#FesabilityEndDate').change(function () {
+        var start = $('#StartDate').val();
+        var fesability = $('#FesabilityEndDate').val();
+        if (start > fesability) {
+            swal({
+                title: "Mismatching Dates",
+                type: "info",
+                text: "Fesability Ends before Start Date"
+            });
+            $('#FesabilityEndDate').val('');
+        }
+    })
+
+    $('#ConceptualEndDate').change(function () {
+        var start = $('#FesabilityEndDate').val();
+        var fesability = $('#ConceptualEndDate').val();
+        if (start > fesability) {
+            swal({
+                title: "Mismatching Dates",
+                type: "info",
+                text: "Conceptual End Date Before Feasibility End Date"
+            });
+            $('#ConceptualEndDate').val('');
+        }
+    })
+
+    $('#DefinitionEndDate').change(function () {
+        var start = $('#ConceptualEndDate').val();
+        var fesability = $('#DefinitionEndDate').val();
+        if (start > fesability) {
+            swal({
+                title: "Mismatching Dates",
+                type: "info",
+                text: "Definition End Date Before Conceptual End Date"
+            });
+            $('#DefinitionEndDate').val('');
+        }
+    })
+
+    $('#DesignConstructEndDate').change(function () {
+        var start = $('#DefinitionEndDate').val();
+        var fesability = $('#DesignConstructEndDate').val();
+        if (start > fesability) {
+            swal({
+                title: "Mismatching Dates",
+                type: "info",
+                text: "Design & Construct End Date Before Conceptual End Date"
+            });
+            $('#DesignConstructEndDate').val('');
+        }
+        var end = $('#PredictedEndDate').val();
+        if (end < fesability) {
+            swal({
+                title: "Mismatching Dates",
+                type: "info",
+                text: "Startup Starts after the Predicted End Date"
+            });
+            $('#DesignConstructEndDate').val('');
+        }
+    })
+
+
 
 </script>

@@ -1,0 +1,51 @@
+﻿@model eProjects.Models.ProjectViewModels.RemoveresourcesModelView
+
+@{
+    ViewData["Title"] = "ManageResources";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<br />
+@Html.ActionLink("Add Resource","AddResource","Manage")
+<br /><br />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ManageResources">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartupLeader" class="control-label"></label>
+                <select asp-for="StartupLeader" class="form-control" asp-items="@ViewBag.SatrtupLeaders">
+                    <option selected value="">-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="StartupLeader" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pcis" class="control-label"></label>
+                <select asp-for="Pcis" class="form-control" asp-itens="@ViewBag.Pcis">
+                    <option selected value="">-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="Pcis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PT" class="control-label"></label>
+                <select asp-for="PT" class="form-control" asp-items="@ViewBag.Pt">
+                    <option selected value="">-----SELECT------</option>
+                </select>
+                <span asp-validation-for="PT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EI" class="control-label"></label>
+                <select asp-for="EI" class="form-control" asp-items="@ViewBag.Ei">
+                    <option selected value="">-----SELECT-----</option>
+                </select>
+                <span asp-validation-for="EI" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Remove" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

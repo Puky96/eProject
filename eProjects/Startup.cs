@@ -13,6 +13,9 @@ using eProjects.Models;
 using eProjects.Services;
 using NonFactors.Mvc.Grid;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using jsreport.AspNetCore;
+using jsreport.Binary;
+using jsreport.Local;
 
 namespace eProjects
 {
@@ -48,6 +51,12 @@ namespace eProjects
 
             services.AddMvc();
             services.AddMvcGrid();
+            services.AddJsReport(new LocalReporting()
+                .UseBinary(JsReportBinary.GetBinary())
+                .Configure(cfg =>
+                    cfg.AllowLocalFilesAccess().BaseUrlAsWorkingDirectory())
+                .AsUtility()
+                .Create());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

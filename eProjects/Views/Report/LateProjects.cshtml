@@ -1,0 +1,44 @@
+﻿@model IEnumerable<eProjects.Models.ProjectViewModels.LateProjectListItem>
+
+@{
+    ViewData["Title"] = "LateProjects";
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+}
+
+@foreach (var item in Model)
+{
+    <h3>@item.ProjectName</h3>
+    <table class="table">
+        <tr>
+            <td>Feasibility Late:</td>
+            <td>@Html.DisplayFor(modelItem => item.FeasibilityLate)</td>
+            <td>Feasibility Commments</td>
+            <td>@Html.DisplayFor(modelItem => item.FeasibilityComments)</td>
+        </tr>
+        <tr>
+            <td>Conceptual Late:</td>
+            <td>@Html.DisplayFor(modelItem => item.ConceptualLate)</td>
+            <td>Conceptual Commments</td>
+            <td>@Html.DisplayFor(modelItem => item.ConceptualComments)</td>
+        </tr>
+        <tr>
+            <td>Definition Late:</td>
+            <td>@Html.DisplayFor(modelItem => item.DefinitionLate)</td>
+            <td>Definition Commments</td>
+            <td>@Html.DisplayFor(modelItem => item.DefinitionComments)</td>
+        </tr>
+        <tr>
+            <td>Design Late:</td>
+            <td>@Html.DisplayFor(modelItem => item.DesignConstructLate)</td>
+            <td>Design Commments</td>
+            <td>@Html.DisplayFor(modelItem => item.DesignConstructComments)</td>
+        </tr>
+        <tr>
+            <td>Startup Late:</td>
+            <td>@Html.DisplayFor(modelItem => item.StartupLate)</td>
+            <td>Startup Commments</td>
+            <td>@Html.DisplayFor(modelItem => item.StartupComments)</td>
+        </tr>
+    </table>
+
+}

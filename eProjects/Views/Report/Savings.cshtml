@@ -1,0 +1,46 @@
+﻿@model IEnumerable<eProjects.Models.ProjectViewModels.SavingsListItem>
+
+@{
+    ViewData["Title"] = "Savings";
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+}
+<br />
+<h4 style="margin-left: 350px;">Urlati Plant - Savings</h4>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjectName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjectLeader)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DueDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Savings)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectLeader)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Savings)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

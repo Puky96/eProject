@@ -8,7 +8,12 @@
 <br />
 @Html.ActionLink("Add Project Leader", "AddProjectLeader", "Manage")
 <br />
-
+@if(ViewBag.Message != null)
+{
+    <br />
+    <label class="text-success">@ViewBag.Message</label>
+    <br />
+}
 
 @(Html.Grid(Model)
     .Build(columns =>
@@ -17,7 +22,7 @@
         columns.Add(model => $"<button class=\"btn btn-info\" onclick=\"showPriorities('"+ model.UriName +"')\">!</button>").Titled("Priorities").Encoded(false);
         columns.Add(model => model.Username).Titled("Username").Filterable(true);
         columns.Add(model => model.Role).Titled("Role").Filterable(true);
-        columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Delete", "DeleteProjectLeader", new { projectLeader = model.Id })).Titled("Delete");
+        columns.Add(model => model.Id).RenderedAs(model => $"<button class=\"btn btn-danger\" onclick=\"deleteLeader('" + model.Id + "')\">Delete</button>").Titled("Delete").Encoded(false);
         columns.Add(model => model.Id).RenderedAs(model => Html.ActionLink("Timeline", "ViewTimeline", "Report", new { projectLeader = model.Id})).Titled("Timeline");
     })
      .Sortable()
@@ -49,6 +54,28 @@
 
             }
         });
+    }
+
+    function deleteLeader(projectLeaderId) {
+        swal({
+            title: "Are you sure?",
+            text: "You will be able to add this again from Manage Resources -> Add Resource",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonClass: "btn-info",
+            cancelButtonText: "No",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                window.location = '/Manage/DeleteProjectLeader?projectLeader=' + projectLeaderId;
+            } else {
+                swal("Cancelled", "Your imaginary file is safe :)", "error");
+            }
+        })
+
     }
 
 </script>
